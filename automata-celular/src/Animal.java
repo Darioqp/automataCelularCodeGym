@@ -42,4 +42,6 @@ public class Animal implements SerVivo {
     //implementar la logica del metodo reproducirse cuando se encuentra con otro animal
 
     //implementar la logica del metodo morir cuando llega a su edad max o se queda sin energia
+
+    //implementar la logica del metodo moverse
 }
