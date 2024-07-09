@@ -5,6 +5,11 @@ public class Animal implements SerVivo {
     private final int ENERGIA_MAXIMA = 20;
     private final int EDAD_MAXIMA = 10;
 
+    public Animal(int energia, int edad) {
+        this.energia = energia;
+        this.edad = edad;
+    }
+
     @Override
     public void nacer() {
         //la energia inicial es un valor aleatorio entre 1 y 5

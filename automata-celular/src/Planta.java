@@ -4,9 +4,14 @@ public class Planta implements SerVivo {
     private int edad;
     private final int ENERGIA_MAXIMA = 30;
 
+    public Planta(int energia, int edad) {
+        this.energia = energia;
+        this.edad = edad;
+    }
+
     @Override
     public void nacer() {
-        energia = 1;
+        energia = 3;
         edad = 0;
     }
 
