@@ -2,17 +2,12 @@ public class Planta implements SerVivo {
 
     private int energia;
     private int edad;
-    private final int ENERGIA_MAXIMA = 30;
+    private boolean estaVivo;
 
-    public Planta(int energia, int edad) {
-        this.energia = energia;
-        this.edad = edad;
-    }
-
-    @Override
-    public void nacer() {
-        energia = 3;
-        edad = 0;
+    public Planta() {
+        this.energia = Configuracion.ENERGIA_INICIAL_PLANTA;
+        this.edad = 0;
+        this.estaVivo = true;
     }
 
     @Override
@@ -26,10 +21,25 @@ public class Planta implements SerVivo {
     }
 
     @Override
-    public void envejecer() {
-        edad++;
-        if (energia < ENERGIA_MAXIMA) {
+    public void incrementarEdad() {
+        if (estaVivo() && edad < Configuracion.EDAD_MAXIMA_PLANTA) {
+            edad++;
+        }
+    }
+
+    public void incrementarEnergia() {
+        if (estaVivo() && energia < Configuracion.ENERGIA_MAXIMA_PLANTA) {
             energia++;
         }
+    }
+
+    @Override
+    public boolean estaVivo() {
+        return this.estaVivo;
+    }
+
+    @Override
+    public void morir() {
+        this.estaVivo = false;
     }
 }

@@ -6,8 +6,8 @@ public class Tablero {
 
 
     public Tablero(int numeroFilas, int numeroColumnas) {
-        this.numeroFilas = numeroFilas;
-        this.numeroColumnas = numeroColumnas;
+        this.numeroFilas = Configuracion.NUMERO_FILAS;
+        this.numeroColumnas = Configuracion.NUMERO_COLUMNAS;
         this.tablero = crearTablero();
     }
 
@@ -22,7 +22,7 @@ public class Tablero {
     }
 
     public Celda getCelda(int fila, int columna) {
-        if (fila >= 0 && fila <= numeroFilas && columna >= 0 && columna <= numeroColumnas) {
+        if (fila >= 0 && fila < numeroFilas && columna >= 0 && columna < numeroColumnas) {
             return tablero[fila][columna];
         } else {
             throw new IllegalArgumentException("Indice de fila y/o columna fuera de rango");
