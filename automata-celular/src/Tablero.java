@@ -43,6 +43,7 @@ public class Tablero {
                     //logica para el comportamiento
                 }
                 //logica para eliminar un animal o planta
+                //logica de las estadisticas
             }
         }
     }

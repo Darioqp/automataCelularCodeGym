@@ -7,7 +7,6 @@ public class SimulacionAutomataCelular {
         while (true) {
             System.out.println("Tiempo: " + tiempo);
             System.out.println(tablero);
-
             tablero.actualizarTablero();
 
             try {
