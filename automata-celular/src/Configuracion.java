@@ -1,9 +1,8 @@
 public final class Configuracion {
+
     //parametros del tablero
     public static final int NUMERO_FILAS = 10;
     public static final int NUMERO_COLUMNAS = 10;
-
-    //parametros de los seres vivos
 
     //parametros de las plantas
     public static final int ENERGIA_INICIAL_PLANTA = 5;

@@ -37,10 +37,4 @@ public class Animal implements SerVivo {
     public void morir() {
         this.estaVivo = false;
     }
-
-    //imlementar la logica del metodo alimentarse cuando se encuentra con una planta
-
-    //implementar la logica del metodo reproducirse cuando se encuentra con otro animal
-
-    //implementar la logica del metodo moverse
 }
