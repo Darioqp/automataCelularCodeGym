@@ -3,13 +3,14 @@ import java.util.List;
 import java.util.Random;
 
 public class Animal implements SerVivo {
-
+    //declaracion de variables
     private int energia;
     private int edad;
     private boolean estaVivo;
     private Celda celda;
     private boolean reprodujo = false;
 
+    //constructor de la clase animal
     public Animal(Celda celda) {
         this.energia = Configuracion.ENERGIA_INICIAL_ANIMAL;
         this.edad = 0;
@@ -50,15 +51,17 @@ public class Animal implements SerVivo {
 
 
     public void alimentarse(Celda celdaVecina) {
-        Planta planta = (Planta) celdaVecina.getSerVivo();
-        int energiaConsumida = Configuracion.ENERGIA_POR_COMIDA;
+        if (celdaVecina.tienePlanta()) {
+            Planta planta = (Planta) celdaVecina.getSerVivo();
+            int energiaConsumida = Configuracion.ENERGIA_POR_COMIDA;
 
-        planta.reducirEnergia(energiaConsumida);
-        this.energia = Math.min(this.energia + energiaConsumida, Configuracion.ENERGIA_MAXIMA_ANIMAL);
+            planta.reducirEnergia(energiaConsumida);
+            this.energia = Math.min(this.energia + energiaConsumida, Configuracion.ENERGIA_MAXIMA_ANIMAL);
 
-        if (!planta.estaVivo()) {
-            celdaVecina.setSerVivo(null);
-            celdaVecina.setEstado(EstadoCelda.VACIO);
+            if (!planta.estaVivo()) {
+                celdaVecina.setSerVivo(null);
+                celdaVecina.setEstado(EstadoCelda.VACIO);
+            }
         }
     }
 
@@ -78,17 +81,19 @@ public class Animal implements SerVivo {
             celdaVecina.setSerVivo(null); // Se elimina el animal de la nueva celda si murió
             celdaVecina.setEstado(EstadoCelda.VACIO); // Marcar la celda como vacía
         } else {
-            // Actualizar el estado de la nueva celda según corresponda
+
             if (celdaVecina.tienePlanta()) {
                 celdaVecina.setEstado(EstadoCelda.ALIMENTACION); // Si hay una planta, el animal se alimenta
+                this.alimentarse(celdaVecina);
             } else if (celdaVecina.tieneAnimal()) {
-                // Reproducirse solo si hay exactamente dos animales en la celda
+                // Hay reproduccion solo si hay exactamente dos animales en la celda
                 if (contarAnimalesEnCelda(celdaVecina) == 2) {
                     celdaVecina.setEstado(EstadoCelda.REPRODUCCION);
+                    Animal pareja = (Animal) celdaVecina.getSerVivo();
+                    this.reproducirse(pareja);
                 }
                 if (contarAnimalesEnCelda(celdaVecina) == 3 || contarAnimalesEnCelda(celdaVecina) == 4) {
                     celdaVecina.setEstado(EstadoCelda.INDEFINIDO); // Si hay más de dos animales, marcar como INDEFINIDO
-
                 }
             } else {
                 celdaVecina.setEstado(EstadoCelda.ANIMAL); // Si está vacía, solo se mueve

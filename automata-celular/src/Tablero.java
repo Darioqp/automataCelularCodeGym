@@ -32,8 +32,6 @@ public class Tablero {
         }
     }
 
-
-
     public void actualizarTablero(int tiempo) {
 
         int cantidadAnimales = 0;
@@ -75,35 +73,40 @@ public class Tablero {
                             celdaActual.setSerVivo(null);
                             celdaActual.setEstado(EstadoCelda.VACIO);
                             cantidadMuertes++;
-                            eventos.append("Muere planta en [").append(i).append(", ").append(j).append("] / ");
+                            eventos.append("Muere planta en [").append(planta.getCelda().getIndiceFila()).append(", ").append(planta.getCelda().getIndiceColumna()).append("] / ");
                         } else {
                             cantidadPlantas++;
                         }
                         break;
 
                     case REPRODUCCION:
-                        Animal animalReproduccion = (Animal) celdaActual.getSerVivo();
-                        if (animalReproduccion.seReprodujo()) {
-                            List<Celda> celdasVecinasVacias = Vecindad.getCeldasVecinasVacias(this, celdaActual);
-                            if (!celdasVecinasVacias.isEmpty()) {
-                                Celda celdaCria = celdasVecinasVacias.get(0);
-                                Animal cria = new Animal(celdaCria);
-                                celdaCria.setSerVivo(cria);
-                                celdaCria.setEstado(EstadoCelda.ANIMAL);
-                                cantidadNacimientos++;
-                                eventos.append("Nacimiento en celda [").append(celdaCria.getIndiceFila()).append(", ").append(celdaCria.getIndiceColumna()).append("] / ");
+                        Animal animalReproducion = (Animal) celdaActual.getSerVivo();
+                        if (animalReproducion.seReprodujo()) { // Verificar si el animal ya se reprodujo en esta iteración
+                            animalReproducion.reiniciarReproduccion(); // Reiniciar el estado de reproducción
+                            celdaActual.setEstado(EstadoCelda.ANIMAL); // Volver al estado ANIMAL
+                        } else {
+                            // Buscar pareja y reproducirse si es posible
+                            for (Celda vecina : Vecindad.obtenerVecinos(this, celdaActual)) {
+                                if (vecina.tieneAnimal()) {
+                                    Animal pareja = (Animal) vecina.getSerVivo();
+                                    animalReproducion.reproducirse(pareja); // Llamar al método reproducirse()
+                                    if (animalReproducion.seReprodujo()) {
+                                        cantidadNacimientos++;
+                                        eventos.append("Nacimiento en celda [").append(animalReproducion.getCelda().getIndiceFila()).append(", ").append(animalReproducion.getCelda().getIndiceColumna()).append("] / ");
+                                        break; // Salir del bucle si se reprodujo
+                                    }
+                                }
                             }
-                            animalReproduccion.reiniciarReproduccion();
+                            if (!animalReproducion.seReprodujo()) {
+                                celdaActual.setEstado(EstadoCelda.INDEFINIDO); // Si no se pudo reproducir, marcar como INDEFINIDO
+                            }
                         }
-                        celdaActual.setEstado(EstadoCelda.ANIMAL); // Volver al estado ANIMAL después de la reproducción
                         break;
 
                     case ALIMENTACION:
                         celdaActual.setEstado(EstadoCelda.ANIMAL); // Volver al estado ANIMAL después de la alimentación
                         break;
                 }
-
-
             }
         }
 
@@ -144,4 +147,22 @@ public class Tablero {
         }
         return salidaTablero.toString();
     }
+
+    /*
+    Animal animalReproduccion = (Animal) celdaActual.getSerVivo();
+                        if (animalReproduccion.seReprodujo()) {
+                            List<Celda> celdasVecinasVacias = Vecindad.getCeldasVecinasVacias(this, celdaActual);
+                            if (!celdasVecinasVacias.isEmpty()) {
+                                Celda celdaCria = celdasVecinasVacias.get(0);
+                                Animal cria = new Animal(celdaCria);
+                                celdaCria.setSerVivo(cria);
+                                celdaCria.setEstado(EstadoCelda.ANIMAL);
+                                cantidadNacimientos++;
+                                eventos.append("Nacimiento en celda [").append(celdaCria.getIndiceFila()).append(", ").append(celdaCria.getIndiceColumna()).append("] / ");
+                            }
+                            animalReproduccion.reiniciarReproduccion();
+                        }
+                        celdaActual.setEstado(EstadoCelda.ANIMAL); // Volver al estado ANIMAL después de la reproducción
+                        break;
+     */
 }
