@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Random;
 
 public class Tablero {
@@ -31,21 +32,84 @@ public class Tablero {
         }
     }
 
-    public void actualizarTablero() {
+
+
+    public void actualizarTablero(int tiempo) {
+
+        int cantidadAnimales = 0;
+        int cantidadPlantas = 0;
+        int cantidadNacimientos = 0;
+        int cantidadMuertes = 0;
+        StringBuilder eventos = new StringBuilder();
+
         for (int i = 0; i < numeroFilas; i++) {
             for (int j = 0; j < numeroColumnas; j++) {
                 Celda celdaActual = tablero[i][j];
-                if (celdaActual.tieneAnimal()) {
-                    Animal animal = (Animal) celdaActual.getSerVivo();
-                    //logica para el comportamiento
-                } else if (celdaActual.tienePlanta()) {
-                    Planta planta = (Planta) celdaActual.getSerVivo();
-                    //logica para el comportamiento
+
+                switch (celdaActual.getEstado()) {
+                    case ANIMAL:
+                        Animal animal = (Animal) celdaActual.getSerVivo();
+                        List<Celda> vecinos = Vecindad.obtenerVecinos(this, celdaActual);
+
+                        animal.moverse(vecinos); // Intenta moverse (puede morir al moverse)
+                        if (animal.estaVivo()) {
+                            animal.incrementarEdad();
+                        }
+
+                        if (!animal.estaVivo()) {
+                            animal.getCelda().setSerVivo(null);
+                            animal.getCelda().setEstado(EstadoCelda.VACIO);
+                            cantidadMuertes++;
+                            eventos.append("Muere animal en [").append(animal.getCelda().getIndiceFila()).append(", ").append(animal.getCelda().getIndiceColumna()).append("] / ");
+                        } else {
+                            cantidadAnimales++;
+                        }
+                        break;
+
+                    case PLANTA:
+                        Planta planta = (Planta) celdaActual.getSerVivo();
+                        planta.incrementarEdad();
+                        planta.incrementarEnergia();
+
+                        if (!planta.estaVivo()) {
+                            celdaActual.setSerVivo(null);
+                            celdaActual.setEstado(EstadoCelda.VACIO);
+                            cantidadMuertes++;
+                            eventos.append("Muere planta en [").append(i).append(", ").append(j).append("] / ");
+                        } else {
+                            cantidadPlantas++;
+                        }
+                        break;
+
+                    case REPRODUCCION:
+                        Animal animalReproduccion = (Animal) celdaActual.getSerVivo();
+                        if (animalReproduccion.seReprodujo()) {
+                            List<Celda> celdasVecinasVacias = Vecindad.getCeldasVecinasVacias(this, celdaActual);
+                            if (!celdasVecinasVacias.isEmpty()) {
+                                Celda celdaCria = celdasVecinasVacias.get(0);
+                                Animal cria = new Animal(celdaCria);
+                                celdaCria.setSerVivo(cria);
+                                celdaCria.setEstado(EstadoCelda.ANIMAL);
+                                cantidadNacimientos++;
+                                eventos.append("Nacimiento en celda [").append(celdaCria.getIndiceFila()).append(", ").append(celdaCria.getIndiceColumna()).append("] / ");
+                            }
+                            animalReproduccion.reiniciarReproduccion();
+                        }
+                        celdaActual.setEstado(EstadoCelda.ANIMAL); // Volver al estado ANIMAL después de la reproducción
+                        break;
+
+                    case ALIMENTACION:
+                        celdaActual.setEstado(EstadoCelda.ANIMAL); // Volver al estado ANIMAL después de la alimentación
+                        break;
                 }
-                //logica para eliminar un animal o planta
-                //logica de las estadisticas
+
+
             }
         }
+
+        tiempo++;
+        Estadisticas estadisticas = new Estadisticas();
+        estadisticas.guardarEstadisticas(tiempo, cantidadAnimales, cantidadPlantas, cantidadNacimientos, cantidadMuertes, eventos.toString());
     }
 
     public void poblarTableroInicial() {
@@ -56,10 +120,10 @@ public class Tablero {
                 if (tipoSerVivo == 0) {
                     tablero[i][i].setEstado(EstadoCelda.VACIO);
                 } else if (tipoSerVivo == 1) {
-                    tablero[i][j].setSerVivo(new Animal());
+                    tablero[i][j].setSerVivo(new Animal(tablero[i][j]));
                     tablero[i][j].setEstado(EstadoCelda.ANIMAL);
                 } else {
-                    tablero[i][j].setSerVivo(new Planta());
+                    tablero[i][j].setSerVivo(new Planta(tablero[i][j]));
                     tablero[i][j].setEstado(EstadoCelda.PLANTA);
                 }
             }

@@ -4,6 +4,7 @@ public class Celda {
     private int indiceColumna;
     private EstadoCelda estado;
     private SerVivo serVivo;
+    private Tablero tablero;
 
 
     public Celda(int indiceFila, int indiceColumna, EstadoCelda estadoInicial) {
@@ -37,6 +38,8 @@ public class Celda {
     public void setSerVivo(SerVivo serVivo) {
         this.serVivo = serVivo;
     }
+
+    public Tablero getTablero() { return tablero;}
 
     // Métodos auxiliares para verificar el estado de la celda
     public boolean estaVacia() {

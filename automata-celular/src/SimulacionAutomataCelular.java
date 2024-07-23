@@ -3,11 +3,11 @@ public class SimulacionAutomataCelular {
         Tablero tablero = new Tablero();
         tablero.poblarTableroInicial();
 
-        int tiempo = 0; // Contador de tiempo
+        int numeroDeIteracion = 0;
         while (true) {
-            System.out.println("Tiempo: " + tiempo);
+            System.out.println("Tiempo: " + (numeroDeIteracion + 1));
             System.out.println(tablero);
-            tablero.actualizarTablero();
+            tablero.actualizarTablero(numeroDeIteracion);
 
             try {
                 Thread.sleep(1000);
@@ -15,7 +15,7 @@ public class SimulacionAutomataCelular {
                 e.printStackTrace();
             }
 
-            tiempo++; // Incrementar el contador de tiempo
+            numeroDeIteracion++; // Incrementar el contador de tiempo
         }
     }
 }

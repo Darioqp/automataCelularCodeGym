@@ -27,4 +27,15 @@ public class Vecindad {
 
         return vecinos;
     }
+
+    public static List<Celda> getCeldasVecinasVacias(Tablero tablero, Celda celda) {
+        List<Celda> vecinos = obtenerVecinos(tablero, celda);
+        List<Celda> celdasVacias = new ArrayList<>();
+        for (Celda vecino : vecinos) {
+            if (vecino.estaVacia()) {
+                celdasVacias.add(vecino);
+            }
+        }
+        return celdasVacias;
+    }
 }

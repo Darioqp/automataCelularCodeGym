@@ -1,4 +1,5 @@
 public enum EstadoCelda {
+
     VACIO("_"),
     PLANTA("P"),
     ANIMAL("A"),
